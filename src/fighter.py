@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This module represents a single fighter object.
 
