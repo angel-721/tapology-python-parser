@@ -14,7 +14,7 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
 
-URL = 'GET YOUR OWN FIGHTER LINK'
+URL = 'FIND A FIGHTER URL FROM tapology'
 
 
 def get_name(url) -> str:
@@ -43,7 +43,8 @@ def get_record(url):
     )
 
     if request.status_code != 200:
-        return "couldn't get code"
+        print("couldn't get code")
+        return None
 
     content = BeautifulSoup(request.text, 'html.parser').find_all(
         'h1', class_='prorecord'
@@ -62,4 +63,30 @@ def get_record(url):
     return fighter_record
 
 
-print(get_record(URL))
+def get_height_and_reach(url):
+    """Make https request to get reach and height in a tuple of floats."""
+    request = requests.get(
+        url, verify=False, allow_redirects=False, headers=HEADERS
+    )
+
+    if request.status_code != 200:
+        print("couldn't get code")
+        return None
+
+    content = BeautifulSoup(request.text, 'html.parser').find_all('span')
+
+    content = str(content).split()
+    if content is None:
+        print("Can't parse fighter record")
+        return None
+
+    group = []
+    for line in content:
+        word = re.search(r'\(.+cm\)', line)
+        if word is not None:
+            group.append(word.group().strip('cm)'))
+
+    height = float(group[0][1:])
+    reach = float(group[1][1:])
+    fighter_height_reach = (height, reach)
+    return fighter_height_reach
