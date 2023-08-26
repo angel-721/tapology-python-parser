@@ -2,13 +2,13 @@
 """
 Parse data from tapology.com.
 
-Turn the data into a figther and fight record.
+Turn the data into a fighter and fight record.
 """
 
 import re
-
 import requests
 from bs4 import BeautifulSoup
+from fighter import Fighter
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -19,12 +19,13 @@ URL = 'FIND A FIGHTER URL FROM tapology'
 
 def get_name(url) -> str:
     """Make https request to get the fighter name."""
-    request = requests.get(
-        url, verify=False, allow_redirects=False, headers=HEADERS
-    )
+    try:
+        request = requests.get(
+            url, verify=False, allow_redirects=False, headers=HEADERS
+        )
+    except Exception as e:
+        raise e
 
-    if request.status_code != 200:
-        return "couldn't get code"
     content = BeautifulSoup(request.text, 'html.parser').find('title')
     name = str(content).split()
 
@@ -43,8 +44,7 @@ def get_record(url):
     )
 
     if request.status_code != 200:
-        print("couldn't get code")
-        return None
+        raise requests.exceptions.HTTPError
 
     content = BeautifulSoup(request.text, 'html.parser').find_all(
         'h1', class_='prorecord'
@@ -70,8 +70,7 @@ def get_height_and_reach(url):
     )
 
     if request.status_code != 200:
-        print("couldn't get code")
-        return None
+        raise requests.exceptions.HTTPError
 
     content = BeautifulSoup(request.text, 'html.parser').find_all('span')
 
