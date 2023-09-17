@@ -1,5 +1,5 @@
 # tapology-python-parser
-Parse data from Tapology.com into fighter obejects.
+Parse data from Tapology.com into fighter objects.
 
 ### USE
 ___
