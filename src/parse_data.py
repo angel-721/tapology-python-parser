@@ -14,7 +14,7 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
 
-URL = 'FIND A FIGHTER URL FROM tapology'
+URL = 'FIND A FIGHTER URL FROM tapology.com'
 
 
 def get_name(url) -> str:
@@ -89,3 +89,35 @@ def get_height_and_reach(url):
     reach = float(group[1][1:])
     fighter_height_reach = (height, reach)
     return fighter_height_reach
+
+
+def get_current_streak(url):
+    """Make https request to get current streak."""
+    request = requests.get(
+        url, verify=False, allow_redirects=False, headers=HEADERS
+    )
+
+    word_group = []
+
+    if request.status_code != 200:
+        raise requests.exceptions.HTTPError
+    content = BeautifulSoup(
+        request.text, 'html.parser').find_all(["strong", "span"])
+    content = str(content).split()
+
+    for i in range(len(content)):
+        if "Streak:</strong>" in content[i]:
+            streak_number = content[i+1].replace('<span>', '')
+            outcome = content[i+2].replace('</span>', '').replace(',', '')
+            break
+
+    if outcome is None or streak_number is None:
+        print("Can't parse fighter record")
+        return None
+
+    if outcome == 'win':
+        streak_number = int(streak_number)
+    elif outcome == 'loss':
+        streak_number = int(streak_number) * -1
+
+    return streak_number
