@@ -37,7 +37,7 @@ def get_name(url) -> str:
     return full_name
 
 
-def get_record(url):
+def get_record(url) -> (tuple[int,int]):
     """Make https request to get the fighter record as int tuple."""
     request = requests.get(
         url, verify=False, allow_redirects=False, headers=HEADERS
@@ -63,7 +63,7 @@ def get_record(url):
     return fighter_record
 
 
-def get_height_and_reach(url):
+def get_height_and_reach(url) -> tuple[float, float]:
     """Make https request to get reach and height in a tuple of floats."""
     request = requests.get(
         url, verify=False, allow_redirects=False, headers=HEADERS
@@ -121,3 +121,15 @@ def get_current_streak(url):
         streak_number = int(streak_number) * -1
 
     return streak_number
+
+
+def make_fighter_object(url) -> Fighter:
+    name = get_name(url)
+    record = get_record(url)
+    wins = record[0]
+    losses = record[1]
+    streak = get_current_streak(url)
+    height_and_reach = get_height_and_reach(url)
+    height = record[0]
+    reach = record[1]
+    return Fighter(name, wins, losses, streak, height, reach)

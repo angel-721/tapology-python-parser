@@ -11,6 +11,5 @@ ___
  * [x] Get fighter records
  * [x] Get fighter height and reach
  * [x] Get fighter win/loss streak
- * [ ] Parse all of the data into a single fighter object
- * [ ] Combine fighters to fights
- * [ ] Parse all fight data via a single link
+ * [x] Parse all of the data into a single fighter object
+ * [ ] Parse all fight data via a single fight link
