@@ -36,96 +36,79 @@ def get_record(soup: BeautifulSoup) -> (tuple[int,int]):
     wins, losses = int(record_text[0]), int(record_text[1])
     return (wins,losses)
 
+def get_height_and_reach(soup) -> tuple[float, float]:
+
+    content = soup.find_all('span')
+
+    content = str(content).split()
+
+    group = []
+    for line in content:
+        word = re.search(r'\(.+cm\)', line)
+        if word is not None:
+            group.append(word.group().strip('cm)'))
+
+    height = float(group[0][1:])
+    reach = float(group[1][1:])
+    return (height,reach)
 
 
-# def get_height_and_reach(url) -> tuple[float, float]:
-#     """Make https request to get reach and height in a tuple of floats."""
-#     request = requests.get(
-#         url, verify=False, allow_redirects=False, headers=HEADERS
-#     )
+def get_current_streak(soup):
 
-#     if request.status_code != 200:
-#         raise requests.exceptions.HTTPError
+    word_group = []
 
-#     content = BeautifulSoup(request.text, 'html.parser').find_all('span')
+    content = soup.find_all(["strong", "span"])
+    content = str(content).split()
 
-#     content = str(content).split()
-#     if content is None:
-#         print("Can't parse fighter record")
-#         return None
+    for i in range(len(content)):
+        if "Streak:</strong>" in content[i]:
+            streak_number = content[i+1].replace('<span>', '')
+            outcome = content[i+2].replace('</span>', '').replace(',', '')
+            break
 
-#     group = []
-#     for line in content:
-#         word = re.search(r'\(.+cm\)', line)
-#         if word is not None:
-#             group.append(word.group().strip('cm)'))
+    if outcome is None or streak_number is None:
+        print("Can't parse fighter record")
+        return None
 
-#     height = float(group[0][1:])
-#     reach = float(group[1][1:])
-#     fighter_height_reach = (height, reach)
-#     return fighter_height_reach
+    if outcome == 'Win':
+        streak_number = int(streak_number)
+    elif outcome == 'Loss':
+        streak_number = int(streak_number) * -1
 
+    return streak_number
 
-# def get_current_streak(url):
-#     """Make https request to get current streak."""
-#     request = requests.get(
-#         url, verify=False, allow_redirects=False, headers=HEADERS
-#     )
+def make_fighter_object(url) -> Fighter:
+    soup = get_soup(url)
+    name = get_name(soup)
+    record = get_record(soup)
+    wins = record[0]
+    losses = record[1]
 
-#     word_group = []
+    streak = get_current_streak(soup)
 
-#     if request.status_code != 200:
-#         raise requests.exceptions.HTTPError
-#     content = BeautifulSoup(
-#         request.text, 'html.parser').find_all(["strong", "span"])
-#     content = str(content).split()
+    height_and_reach = get_height_and_reach(soup)
+    height = height_and_reach[0]
+    reach = height_and_reach[1]
+    return Fighter(name, wins, losses, streak, height, reach)
 
-#     for i in range(len(content)):
-#         if "Streak:</strong>" in content[i]:
-#             streak_number = content[i+1].replace('<span>', '')
-#             outcome = content[i+2].replace('</span>', '').replace(',', '')
-#             break
+def parse_fight(url) -> Fight:
+    request = requests.get(
+        url, verify=False, allow_redirects=False, headers=HEADERS
+    )
 
-#     if outcome is None or streak_number is None:
-#         print("Can't parse fighter record")
-#         return None
+    if request.status_code != 200:
+        raise requests.exceptions.HTTPError
 
-#     if outcome == 'win':
-#         streak_number = int(streak_number)
-#     elif outcome == 'loss':
-#         streak_number = int(streak_number) * -1
+    soup = BeautifulSoup(request.text, 'html.parser')
+    span_tags = soup.find_all("span", class_ ="fName")
+    a_tags = [tag.find('a') for tag in span_tags if tag.a != None]
 
-#     return streak_number
+    links = [a.get('href') for a in a_tags]
 
-# def parse_fight(url):
-#     request = requests.get(
-#         url, verify=False, allow_redirects=False, headers=HEADERS
-#     )
+    for i in range(0, len(links)):
+        links[i] = "https://www.tapology.com" + links[i]
 
-#     if request.status_code != 200:
-#         raise requests.exceptions.HTTPError
-
-#     soup = BeautifulSoup(request.text, 'html.parser')
-#     span_tags = soup.find_all("span", class_ ="fName")
-#     a_tags = [tag.find('a') for tag in span_tags if tag.a != None]
-
-#     links = [a.get('href') for a in a_tags]
-
-#     for i in range(0, len(links)):
-#         links[i] = "https://www.tapology.com" + links[i]
-
-#     fighter_r = make_fighter_object(links[0])
-#     fighter_b = make_fighter_object(links[1])
-#     fight = Fight(fighter_r, fighter_b)
-#     return Fight
-
-# def make_fighter_object(url) -> Fighter:
-#     name = get_name(url)
-#     record = get_record(url)
-#     wins = record[0]
-#     losses = record[1]
-#     streak = get_current_streak(url)
-#     height_and_reach = get_height_and_reach(url)
-#     height = height_and_reach[0]
-#     reach = height_and_reach[1]
-#     return Fighter(name, wins, losses, streak, height, reach)
+    fighter_r: Fighter = make_fighter_object(links[0])
+    fighter_b: Fighter = make_fighter_object(links[1])
+    fight: Fight = Fight(fighter_r, fighter_b)
+    return fight
