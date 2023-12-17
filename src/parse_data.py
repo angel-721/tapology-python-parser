@@ -8,7 +8,7 @@ Turn the data into a fighter and fight record.
 import re
 import requests
 from bs4 import BeautifulSoup
-from fighter import Fighter
+from fighter import Fighter, Fight
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -122,6 +122,27 @@ def get_current_streak(url):
 
     return streak_number
 
+def parse_fight(url):
+    request = requests.get(
+        url, verify=False, allow_redirects=False, headers=HEADERS
+    )
+
+    if request.status_code != 200:
+        raise requests.exceptions.HTTPError
+
+    soup = BeautifulSoup(request.text, 'html.parser')
+    span_tags = soup.find_all("span", class_ ="fName")
+    a_tags = [tag.find('a') for tag in span_tags if tag.a != None]
+
+    links = [a.get('href') for a in a_tags]
+
+    for i in range(0, len(links)):
+        links[i] = "https://www.tapology.com" + links[i]
+
+    fighter_r = make_fighter_object(links[0])
+    fighter_b = make_fighter_object(links[1])
+    fight = Fight(fighter_r, fighter_b)
+    return Fight
 
 def make_fighter_object(url) -> Fighter:
     name = get_name(url)

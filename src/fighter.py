@@ -83,3 +83,10 @@ class Fighter:
     def get_height(self): return self.height_and_reach[0]
 
     def get_reach(self): return self.height_and_reach[1]
+
+
+
+class Fight:
+    def __init__(self, red_fighter, blue_fighter) -> None:
+        self.r_fighter = red_fighter
+        self.b_fighter = blue_fighter
