@@ -30,33 +30,12 @@ def get_name(soup: BeautifulSoup) -> str:
     full_name = name_header.text
     return full_name
 
-soup = get_soup("https://www.tapology.com/fightcenter/fighters/34779-jiri-prochazka")
-get_name(soup)
+def get_record(soup: BeautifulSoup) -> (tuple[int,int]):
+    content = soup.find('h1', class_='prorecord')
+    record_text = content.text.split('-')
+    wins, losses = int(record_text[0]), int(record_text[1])
+    return (wins,losses)
 
-# def get_record(url) -> (tuple[int,int]):
-#     """Make https request to get the fighter record as int tuple."""
-#     request = requests.get(
-#         url, verify=False, allow_redirects=False, headers=HEADERS
-#     )
-
-#     if request.status_code != 200:
-#         raise requests.exceptions.HTTPError
-
-#     content = BeautifulSoup(request.text, 'html.parser').find_all(
-#         'h1', class_='prorecord'
-#     )
-
-#     record = str(content).split()[1]
-#     if record is None:
-#         print("Can't parse fighter record")
-#         return None
-
-#     record = re.search(r'>.+-', record).group().split('-')
-#     wins = int(record[0][1:])
-#     losses = int(record[1])
-#     fighter_record = (wins, losses)
-
-#     return fighter_record
 
 
 # def get_height_and_reach(url) -> tuple[float, float]:
