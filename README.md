@@ -12,4 +12,5 @@ ___
  * [x] Get fighter height and reach
  * [x] Get fighter win/loss streak
  * [x] Parse all of the data into a single fighter object
- * [ ] Parse all fight data via a single fight link
+ * [x] Parse all fight data via a single fight link
+ * [] Don't make an HTTP request for every helper
