@@ -13,4 +13,5 @@ ___
  * [x] Get fighter win/loss streak
  * [x] Parse all of the data into a single fighter object
  * [x] Parse all fight data via a single fight link
- * [ ] Don't make an HTTP request for every helper call
+ * [x] Don't make an HTTP request for every helper
+ * [ ] Get odds for each fighter
