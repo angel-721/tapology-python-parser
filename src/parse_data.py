@@ -130,6 +130,6 @@ def make_fighter_object(url) -> Fighter:
     losses = record[1]
     streak = get_current_streak(url)
     height_and_reach = get_height_and_reach(url)
-    height = record[0]
-    reach = record[1]
+    height = height_and_reach[0]
+    reach = height_and_reach[1]
     return Fighter(name, wins, losses, streak, height, reach)
