@@ -14,4 +14,3 @@ ___
  * [x] Parse all of the data into a single fighter object
  * [x] Parse all fight data via a single fight link
  * [x] Don't make an HTTP request for every helper
- * [ ] Get odds for each fighter
