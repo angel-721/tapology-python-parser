@@ -9,6 +9,9 @@ import re
 import requests
 from bs4 import BeautifulSoup
 from fighter import Fighter, Fight
+import urllib3
+
+urllib3.disable_warnings()
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -100,15 +103,18 @@ def parse_fight(url) -> Fight:
         raise requests.exceptions.HTTPError
 
     soup = BeautifulSoup(request.text, 'html.parser')
-    span_tags = soup.find_all("span", class_ ="fName")
-    a_tags = [tag.find('a') for tag in span_tags if tag.a != None]
+    div_tags = soup.find_all("div", class_ ="div w-1/3 md:w-[261px] flex flex-col text-sm md:text-xs font-bold items-center truncate")
+    a_tags = [tag.find('a') for tag in div_tags if tag.a != None]
 
     links = [a.get('href') for a in a_tags]
 
     for i in range(0, len(links)):
         links[i] = "https://www.tapology.com" + links[i]
 
+    print(links)
     fighter_r: Fighter = make_fighter_object(links[0])
     fighter_b: Fighter = make_fighter_object(links[1])
     fight: Fight = Fight(fighter_r, fighter_b)
     return fight
+
+parse_fight("https://www.tapology.com/fightcenter/bouts/1015133-ufc-fight-night-johnny-walker-vs-mountain-tiger-mingyang-zhang")
