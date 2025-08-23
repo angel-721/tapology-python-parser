@@ -1,16 +1,6 @@
 # tapology-python-parser
 Parse data from Tapology.com into fighter objects.
 
-### USE
-___
-I hope to polish this to the point you can get figther data and save them into either SQl db records or CSV records to use with my [UFP](https://github.com/angel-721/UFP)
-
-### ROADMAP
-___
- * [x] Get fighter names
- * [x] Get fighter records
- * [x] Get fighter height and reach
- * [x] Get fighter win/loss streak
- * [x] Parse all of the data into a single fighter object
- * [x] Parse all fight data via a single fight link
- * [x] Don't make an HTTP request for every helper
+### DO NOT USE FOR COMMERCIAL PURPOSES!
+Read the Tapolgy [Terms of Service](https://www.tapology.com/terms_of_use) before using
+"Tapology UFC Rankings may not be republished or reproduced in full or substantially in full without the express written consent of Tapology. This includes the use of any web bots, data scraping tools, AI applications or similar technologies that relay, capture or extract such information." 
