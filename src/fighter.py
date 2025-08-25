@@ -66,24 +66,31 @@ class Fighter:
             raise ("A fighter reach must be an float")
         if height_and_reach[0] < 0 or height_and_reach[1] < 0:
             raise ("height or reach can not be less than 0")
-        self.height_and_reach = (height_and_reach)
+        self.height_and_reach = height_and_reach
 
-    def get_name(self): return self.fighter_name
+    def get_name(self):
+        return self.fighter_name
 
-    def get_record(self): return self.fighter_record
+    def get_record(self):
+        return self.fighter_record
 
-    def get_wins(self): return self.fighter_record[0]
+    def get_wins(self):
+        return self.fighter_record[0]
 
-    def get_losses(self): return self.fighter_record[1]
+    def get_losses(self):
+        return self.fighter_record[1]
 
-    def get_streak(self): return self.streak
+    def get_streak(self):
+        return self.streak
 
-    def get_height_and_reach_tuple(self): return self.height_and_reach
+    def get_height_and_reach_tuple(self):
+        return self.height_and_reach
 
-    def get_height(self): return self.height_and_reach[0]
+    def get_height(self):
+        return self.height_and_reach[0]
 
-    def get_reach(self): return self.height_and_reach[1]
-
+    def get_reach(self):
+        return self.height_and_reach[1]
 
 
 class Fight:
